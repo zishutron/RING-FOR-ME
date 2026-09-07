@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>RING FOR ME — Discover People Nearby</title>
+  <meta name="description" content="Discover people around you, send a Ring, and explore new connections with RING FOR ME.">
+  <!-- Open Graph / Twitter -->
+  <meta property="og:title" content="RING FOR ME — Discover People Nearby">
+  <meta property="og:description" content="Discover people around you, send a Ring, and explore new connections.">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="#">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #0b0b0b;
+      color: #e8e6e3;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      font-weight: 300;
+      line-height: 1.5;
+      scroll-behavior: smooth;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* gold accent */
+    :root {
+      --gold: #d4af7a;
+      --gold-glow: rgba(212, 175, 122, 0.3);
+      --glass-bg: rgba(20, 20, 20, 0.65);
+      --glass-border: rgba(212, 175, 122, 0.15);
+      --charcoal: #121212;
+      --deep-black: #0a0a0a;
+    }
+
+    h1, h2, h3, h4 {
+      font-weight: 300;
+      letter-spacing: -0.02em;
+    }
+
+    a {
+      color: var(--gold);
+      text-decoration: none;
+    }
+
+    /* glassmorphism */
+    .glass {
+      background: var(--glass-bg);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+    }
+
+    .gold-text {
+      color: var(--gold);
+    }
+
+    .gold-border {
+      border-color: var(--gold);
+    }
+
+    .btn-primary {
+      background: var(--gold);
+      color: #0b0b0b;
+      border: none;
+      padding: 14px 32px;
+      border-radius: 40px;
+      font-weight: 500;
+      font-size: 1rem;
+      letter-spacing: 0.02em;
+      transition: all 0.25s ease;
+      box-shadow: 0 0 20px rgba(212, 175, 122, 0.2);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-primary:hover {
+      transform: scale(1.02);
+      box-shadow: 0 0 35px rgba(212, 175, 122, 0.4);
+      background: #e0c08a;
+    }
+
+    .btn-secondary {
+      background: transparent;
+      border: 1px solid rgba(212, 175, 122, 0.3);
+      color: #e8e6e3;
+      padding: 14px 32px;
+      border-radius: 40px;
+      font-weight: 400;
+      font-size: 1rem;
+      transition: all 0.25s ease;
+      cursor: pointer;
+      backdrop-filter: blur(4px);
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--gold);
+      background: rgba(212, 175, 122, 0.08);
+    }
+
+    /* navbar */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      padding: 20px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 100;
+      transition: all 0.3s ease;
+      background: transparent;
+    }
+
+    .navbar.scrolled {
+      background: rgba(10, 10, 10, 0.8);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(212, 175, 122, 0.08);
+      padding: 14px 40px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 1.4rem;
+      letter-spacing: 0.04em;
+    }
+
+    .brand-symbol {
+      color: var(--gold);
+      font-size: 1.8rem;
+      line-height: 1;
+    }
+
+    .brand-ring {
+      font-weight: 400;
+      color: #f0ede8;
+    }
+
+    .brand-for {
+      font-size: 0.7rem;
+      font-weight: 300;
+      color: #a9a39a;
+      letter-spacing: 0.15em;
+      margin-left: 4px;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      list-style: none;
+      font-size: 0.9rem;
+      font-weight: 300;
+    }
+
+    .nav-links a {
+      color: #d4d0ca;
+      transition: color 0.2s;
+      letter-spacing: 0.02em;
+    }
+
+    .nav-links a:hover {
+      color: var(--gold);
+    }
+
+    .nav-cta {
+      background: var(--gold);
+      color: #0b0b0b;
+      padding: 8px 20px;
+      border-radius: 40px;
+      font-weight: 500;
+      font-size: 0.8rem;
+      transition: all 0.2s;
+    }
+
+    .nav-cta:hover {
+      background: #e0c08a;
+      color: #0b0b0b;
+    }
+
+    .menu-toggle {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      background: none;
+      border: none;
+    }
+
+    .menu-toggle span {
+      width: 26px;
+      height: 2px;
+      background: #e8e6e3;
+      transition: 0.3s;
+    }
+
+    /* mobile nav */
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      background: rgba(10, 10, 10, 0.96);
+      backdrop-filter: blur(20px);
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 30px;
+      z-index: 99;
+      padding: 40px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+
+    .mobile-menu.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .mobile-menu a {
+      font-size: 1.8rem;
+      color: #e8e6e3;
+      font-weight: 300;
+    }
+
+    .mobile-menu .btn-primary {
+      font-size: 1.2rem;
+      padding: 16px 40px;
+    }
+
+    /* hero */
+    .hero {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      min-height: 720px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      background: #0b0b0b;
+    }
+
+    .hero-video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .hero-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at 30% 40%, rgba(10, 10, 10, 0.3) 0%, rgba(0,0,0,0.7) 90%);
+      z-index: 1;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 780px;
+      padding: 40px 50px;
+      margin-left: 6%;
+      margin-top: -5%;
+    }
+
+    .hero-eyebrow {
+      font-size: 0.8rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 18px;
+      opacity: 0.8;
+    }
+
+    .hero h1 {
+      font-size: clamp(3rem, 8vw, 5.2rem);
+      font-weight: 300;
+      line-height: 1.05;
+      margin-bottom: 24px;
+      letter-spacing: -0.02em;
+    }
+
+    .hero h1 .gold-text {
+      font-weight: 400;
+    }
+
+    .hero p {
+      font-size: 1.2rem;
+      max-width: 500px;
+      color: #d4d0ca;
+      margin-bottom: 40px;
+      font-weight: 300;
+      line-height: 1.6;
+    }
+
+    .hero-ctas {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .trust-line {
+      font-size: 0.8rem;
+      color: #9a948b;
+      margin-top: 16px;
+      letter-spacing: 0.04em;
+    }
+
+    /* radar pulse effect (minimal) */
+    .radar-pulse {
+      position: absolute;
+      bottom: 10%;
+      right: 8%;
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      border: 1px solid rgba(212, 175, 122, 0.2);
+      background: radial-gradient(circle, rgba(212,175,122,0.02) 0%, transparent 70%);
+      z-index: 2;
+      animation: pulseRing 4s infinite;
+      pointer-events: none;
+    }
+
+    @keyframes pulseRing {
+      0% { transform: scale(0.8); opacity: 0.3; }
+      50% { transform: scale(1.4); opacity: 0.1; }
+      100% { transform: scale(0.8); opacity: 0.3; }
+    }
+
+    /* sections */
+    section {
+      padding: 100px 40px;
+      max-width: 1440px;
+      margin: 0 auto;
+    }
+
+    .section-eyebrow {
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 12px;
+      opacity: 0.7;
+    }
+
+    .section-title {
+      font-size: clamp(2.2rem, 4vw, 3.4rem);
+      font-weight: 300;
+      margin-bottom: 24px;
+      line-height: 1.1;
+    }
+
+    .section-sub {
+      max-width: 600px;
+      color: #b5b0a8;
+      font-size: 1.1rem;
+      margin-bottom: 60px;
+    }
+
+    .grid-2col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+    }
+
+    .grid-3col {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 40px;
+    }
+
+    .step-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(6px);
+      border: 1px solid var(--glass-border);
+      border-radius: 28px;
+      padding: 40px 32px;
+      transition: all 0.3s;
+    }
+
+    .step-card:hover {
+      border-color: rgba(212, 175, 122, 0.3);
+      box-shadow: 0 0 30px rgba(212, 175, 122, 0.03);
+    }
+
+    .step-number {
+      font-size: 0.8rem;
+      color: var(--gold);
+      letter-spacing: 0.1em;
+      margin-bottom: 12px;
+      opacity: 0.7;
+    }
+
+    .step-card h3 {
+      font-size: 1.6rem;
+      font-weight: 300;
+      margin-bottom: 12px;
+    }
+
+    .step-card p {
+      color: #b5b0a8;
+      font-size: 0.95rem;
+      font-weight: 300;
+    }
+
+    /* ring moment */
+    .ring-moment {
+      background: radial-gradient(circle at 50% 30%, #181613 0%, #0a0a0a 90%);
+      border-radius: 48px;
+      padding: 100px 60px;
+      text-align: center;
+      margin: 40px auto;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .ring-glow {
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(212,175,122,0.15) 0%, transparent 70%);
+      margin: 0 auto 40px;
+      animation: pulseRing 5s infinite;
+    }
+
+    .ring-moment h2 {
+      font-size: clamp(2.4rem, 4vw, 3.6rem);
+      font-weight: 300;
+    }
+
+    .ring-moment p {
+      max-width: 440px;
+      margin: 20px auto 0;
+      color: #b5b0a8;
+    }
+
+    /* screenshot showcase */
+    .showcase-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 30px;
+      margin-top: 40px;
+    }
+
+    .showcase-item {
+      background: var(--glass-bg);
+      backdrop-filter: blur(4px);
+      border: 1px solid var(--glass-border);
+      border-radius: 28px;
+      padding: 16px 16px 20px;
+      transition: all 0.3s;
+      text-align: center;
+    }
+
+    .showcase-item:hover {
+      border-color: rgba(212, 175, 122, 0.2);
+      transform: translateY(-4px);
+    }
+
+    .showcase-item img {
+      width: 100%;
+      height: auto;
+      border-radius: 16px;
+      display: block;
+      background: #0f0f0f;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+    }
+
+    .showcase-label {
+      margin-top: 14px;
+      font-size: 0.8rem;
+      letter-spacing: 0.06em;
+      color: #cac5bc;
+      font-weight: 300;
+    }
+
+    .showcase-label span {
+      display: block;
+      font-size: 0.7rem;
+      color: #9a948b;
+      margin-top: 4px;
+    }
+
+    /* feature grid */
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 30px;
+      margin-top: 20px;
+    }
+
+    .feature-item {
+      background: var(--glass-bg);
+      backdrop-filter: blur(4px);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      padding: 32px 24px;
+      transition: 0.2s;
+    }
+
+    .feature-item:hover {
+      border-color: rgba(212, 175, 122, 0.2);
+    }
+
+    .feature-item h4 {
+      font-size: 1.2rem;
+      font-weight: 400;
+      margin-bottom: 8px;
+      color: #e0dcd6;
+    }
+
+    .feature-item p {
+      font-size: 0.9rem;
+      color: #b5b0a8;
+    }
+
+    /* ringing experience */
+    .ringing-section {
+      background: radial-gradient(circle at 30% 20%, #1a1712 0%, #0a0a0a 80%);
+      border-radius: 48px;
+      padding: 80px 60px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 60px;
+      justify-content: center;
+    }
+
+    .ringing-section .content {
+      flex: 1 1 300px;
+    }
+
+    .ringing-section img {
+      flex: 1 1 280px;
+      max-width: 320px;
+      border-radius: 32px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.8), 0 0 30px rgba(212,175,122,0.05);
+      border: 1px solid rgba(212,175,122,0.08);
+    }
+
+    /* faq */
+    .faq-list {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .faq-item {
+      border-bottom: 1px solid rgba(212, 175, 122, 0.08);
+      padding: 24px 0;
+      cursor: pointer;
+    }
+
+    .faq-question {
+      display: flex;
+      justify-content: space-between;
+      font-size: 1.1rem;
+      font-weight: 300;
+      color: #e0dcd6;
+    }
+
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: 0.3s;
+      color: #b5b0a8;
+      padding-top: 4px;
+    }
+
+    .faq-item.active .faq-answer {
+      max-height: 200px;
+      padding-top: 16px;
+    }
+
+    /* footer */
+    .footer {
+      padding: 60px 40px 30px;
+      border-top: 1px solid rgba(212, 175, 122, 0.06);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1440px;
+      margin: 0 auto;
+      color: #9a948b;
+      font-size: 0.85rem;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 30px;
+    }
+
+    .footer-links a {
+      color: #b5b0a8;
+    }
+
+    .footer-links a:hover {
+      color: var(--gold);
+    }
+
+    /* responsive */
+    @media (max-width: 1024px) {
+      .grid-2col, .grid-3col, .feature-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      .hero-content { margin-left: 4%; padding: 20px; }
+    }
+
+    @media (max-width: 768px) {
+      .navbar { padding: 16px 20px; }
+      .nav-links { display: none; }
+      .menu-toggle { display: flex; }
+      .hero { min-height: 640px; }
+      .hero-content { margin-left: 0; padding: 20px; text-align: center; }
+      .hero p { max-width: 100%; }
+      .hero-ctas { justify-content: center; }
+      .grid-2col, .grid-3col, .feature-grid {
+        grid-template-columns: 1fr;
+      }
+      section { padding: 60px 20px; }
+      .ring-moment, .ringing-section { padding: 60px 24px; }
+      .footer { flex-direction: column; gap: 24px; text-align: center; }
+      .showcase-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 480px) {
+      .showcase-grid { grid-template-columns: 1fr 1fr; gap: 16px; }
+      .showcase-item { padding: 12px; }
+      .hero h1 { font-size: 2.8rem; }
+      .btn-primary, .btn-secondary { padding: 12px 24px; font-size: 0.9rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar" id="navbar">
+    <div class="brand">
+      <span class="brand-symbol">✦</span>
+      <span class="brand-ring">RING</span>
+      <span class="brand-for">for me</span>
+    </div>
+    <ul class="nav-links">
+      <li><a href="#how">How It Works</a></li>
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#features">Features</a></li>
+      <li><a href="#screens">Screens</a></li>
+      <li><a href="#faq">FAQ</a></li>
+      <li><a href="#download" class="nav-cta">GET THE APP</a></li>
+    </ul>
+    <button class="menu-toggle" id="menuToggle" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#how">How It Works</a>
+    <a href="#experience">Experience</a>
+    <a href="#features">Features</a>
+    <a href="#screens">Screens</a>
+    <a href="#faq">FAQ</a>
+    <a href="#download" class="btn-primary">GET THE APP</a>
+  </div>
+
+  <!-- Hero -->
+  <section class="hero" id="home">
+    <video class="hero-video" autoplay muted loop playsinline poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25'%3E%3Crect width='100%25' height='100%25' fill='%230b0b0b'/%3E%3C/svg%3E">
+      <source src="https://res.cloudinary.com/vnq9eo7a/video/upload/v1788694377/Social_discovery_app_video_story__202609061659.mp4" type="video/mp4">
+    </video>
+    <div class="hero-overlay"></div>
+    <div class="radar-pulse"></div>
+    <div class="hero-content">
+      <div class="hero-eyebrow">✦ proximity discovery</div>
+      <h1>Someone nearby.<br><span class="gold-text">One Ring away.</span></h1>
+      <p>Discover people around you, send a Ring, and see where the connection goes.</p>
+      <div class="hero-ctas">
+        <a href="https://github.com/zishutron/Stardust-store/releases/download/v3.2.0/ringforme.apk" class="btn-primary">GET THE APP</a>
+        <a href="#how" class="btn-secondary">EXPLORE RING FOR ME</a>
+      </div>
+      <div class="trust-line">Android APK • Free to try</div>
+    </div>
+  </section>
+
+  <!-- Product Intro -->
+  <section>
+    <div class="section-eyebrow">A DIFFERENT WAY TO DISCOVER</div>
+    <h2 class="section-title">The world around you <br>is closer than you think.</h2>
+    <p class="section-sub">RING FOR ME is built around discovering people nearby and creating a lightweight way to start an interaction.</p>
+    <div style="height:2px; width:80px; background: var(--gold); opacity:0.3; margin-top:10px;"></div>
+  </section>
+
+  <!-- How it works -->
+  <section id="how">
+    <div class="section-eyebrow">HOW A RING WORKS</div>
+    <h2 class="section-title">Three simple steps</h2>
+    <div class="grid-3col">
+      <div class="step-card"><div class="step-number">01 — DISCOVER</div><h3>Find people nearby</h3><p>Proximity-based discovery shows you who's around.</p></div>
+      <div class="step-card"><div class="step-number">02 — RING</div><h3>Send a simple Ring</h3><p>See a profile and tap the gold Ring button.</p></div>
+      <div class="step-card"><div class="step-number">03 — CONNECT</div><h3>Mutual Ring</h3><p>If they Ring back, the connection begins.</p></div>
+    </div>
+  </section>
+
+  <!-- Signature Ring Moment -->
+  <div class="ring-moment" id="experience">
+    <div class="ring-glow"></div>
+    <h2>One tap can start <span class="gold-text">something.</span></h2>
+    <p>See someone nearby? Send a Ring.</p>
+  </div>
+
+  <!-- Real app screens -->
+  <section id="screens">
+    <div class="section-eyebrow">REAL APP EXPERIENCE</div>
+    <h2 class="section-title">Discover, Ring, connect</h2>
+    <div class="showcase-grid">
+      <div class="showcase-item"><img src="https://i.ibb.co/rKG84jnS/Screenshot-20260906-150423.jpg" alt="Main screen" loading="lazy"><div class="showcase-label">DISCOVER <span>See who's around you</span></div></div>
+      <div class="showcase-item"><img src="https://i.ibb.co/LdSsScpS/Screenshot-20260906-150436.jpg" alt="Profile screen" loading="lazy"><div class="showcase-label">YOUR PROFILE <span>Show a little about you</span></div></div>
+      <div class="showcase-item"><img src="https://i.ibb.co/VWxpKyzN/Screenshot-20260906-150439.jpg" alt="Ranged screen" loading="lazy"><div class="showcase-label">RINGED <span>Track your connections</span></div></div>
+      <div class="showcase-item"><img src="https://i.ibb.co/yB5W8fvY/Screenshot-20260906-150431.jpg" alt="History screen" loading="lazy"><div class="showcase-label">HISTORY <span>All your Rings</span></div></div>
+      <div class="showcase-item"><img src="https://i.ibb.co/XxzrRPXX/Screenshot-20260906-150453.jpg" alt="Settings screen" loading="lazy"><div class="showcase-label">SETTINGS <span>Manage your profile</span></div></div>
+      <div class="showcase-item"><img src="https://i.ibb.co/2YZpTw6x/Screenshot-20260906-150613.jpg" alt="Ringing screen" loading="lazy"><div class="showcase-label">RINGING <span>Incoming Ring</span></div></div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section id="features">
+    <div class="section-eyebrow">CAPABILITIES</div>
+    <h2 class="section-title">Built around the Ring</h2>
+    <div class="feature-grid">
+      <div class="feature-item"><h4>Nearby Discovery</h4><p>People around you, ready to connect.</p></div>
+      <div class="feature-item"><h4>Profile Cards</h4><p>Quickly understand who's nearby.</p></div>
+      <div class="feature-item"><h4>Simple Ring</h4><p>One tap starts the interaction.</p></div>
+      <div class="feature-item"><h4>Ring History</h4><p>Keep track of your previous Rings.</p></div>
+      <div class="feature-item"><h4>Ghost Mode</h4><p>Privacy-oriented visibility control.</p></div>
+      <div class="feature-item"><h4>Ring Notification</h4><p>Receive incoming Rings instantly.</p></div>
+    </div>
+  </section>
+
+  <!-- Ringing experience -->
+  <section id="ringing" style="padding-top:20px;">
+    <div class="ringing-section">
+      <div class="content">
+        <div class="section-eyebrow">RINGING</div>
+        <h2 style="font-size:2.4rem; font-weight:300; margin-bottom:16px;">When a Ring <span class="gold-text">finds you.</span></h2>
+        <p style="color:#b5b0a8;">The incoming Ring experience — a gold pulse, a signal that someone nearby wants to connect.</p>
+      </div>
+      <img src="https://i.ibb.co/2YZpTw6x/Screenshot-20260906-150613.jpg" alt="Ringing screen" loading="lazy">
+    </div>
+  </section>
+
+  <!-- Download CTA -->
+  <section id="download" style="text-align:center;">
+    <h2 class="section-title">Ready to send your <span class="gold-text">first Ring?</span></h2>
+    <p style="max-width:480px; margin:0 auto 40px; color:#b5b0a8;">Take RING FOR ME with you and discover what's around you.</p>
+    <a href="https://github.com/zishutron/Stardust-store/releases/download/v3.2.0/ringforme.apk" class="btn-primary" style="font-size:1.2rem; padding:18px 48px;">DOWNLOAD APK</a>
+    <div style="margin-top:16px; color:#9a948b; font-size:0.8rem;">Android APK • Free to try</div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq">
+    <div class="section-eyebrow">QUESTIONS</div>
+    <h2 class="section-title">Frequently asked</h2>
+    <div class="faq-list">
+      <div class="faq-item active"><div class="faq-question">What is RING FOR ME? <span>+</span></div><div class="faq-answer">A proximity-based social discovery app. Discover people nearby and send a Ring to start a connection.</div></div>
+      <div class="faq-item"><div class="faq-question">How does a Ring work? <span>+</span></div><div class="faq-answer">You see a profile, tap the Ring button, and if they Ring back, it's a mutual connection.</div></div>
+      <div class="faq-item"><div class="faq-question">How do I discover people nearby? <span>+</span></div><div class="faq-answer">The app shows you profiles in your surrounding area based on proximity.</div></div>
+      <div class="faq-item"><div class="faq-question">What is Ghost Mode? <span>+</span></div><div class="faq-answer">A privacy setting that controls your visibility to others.</div></div>
+      <div class="faq-item"><div class="faq-question">Where can I download the Android app? <span>+</span></div><div class="faq-answer">Direct APK download from the official repository: <a href="https://github.com/zishutron/Stardust-store/releases/download/v3.2.0/ringforme.apk">ringforme.apk</a></div></div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="brand" style="font-size:1.2rem;">
+      <span class="brand-symbol">✦</span>
+      <span class="brand-ring">RING</span>
+      <span class="brand-for">for me</span>
+    </div>
+    <div class="footer-links">
+      <a href="#home">Home</a>
+      <a href="#how">How It Works</a>
+      <a href="#features">Features</a>
+      <a href="#screens">Screens</a>
+      <a href="#faq">FAQ</a>
+      <a href="https://zishutron.github.io/ringforme/privacy" target="_blank">Privacy</a>
+      <a href="https://zishutron.github.io/ringforme/terms" target="_blank">Terms</a>
+      <a href="https://github.com/zishutron/Stardust-store/releases/download/v3.2.0/ringforme.apk">Download</a>
+    </div>
+    <div style="color:#6b6760; font-size:0.75rem;">© 2026 RING FOR ME</div>
+  </footer>
+
+  <script>
+    // navbar scroll
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 80) navbar.classList.add('scrolled');
+      else navbar.classList.remove('scrolled');
+    });
+
+    // mobile menu
+    const toggle = document.getElementById('menuToggle');
+    const menu = document.getElementById('mobileMenu');
+    toggle.addEventListener('click', () => {
+      menu.classList.toggle('open');
+    });
+    menu.querySelectorAll('a').forEach(link => link.addEventListener('click', () => menu.classList.remove('open')));
+
+    // faq accordion
+    document.querySelectorAll('.faq-item').forEach(item => {
+      item.addEventListener('click', function() {
+        this.classList.toggle('active');
+      });
+    });
+
+    // smooth anchor
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        const href = this.getAttribute('href');
+        if (href === '#') return;
+        e.preventDefault();
+        const target = document.querySelector(href);
+        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+  </script>
+</body>
+</html>
